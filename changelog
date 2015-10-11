@@ -1,0 +1,5 @@
+protocol version 1:
+Découverte et intéraction avec différents protocoles : upnp, airplay, chromecast
+upnp : découverte et intéraction opérationnelles
+airplay : découverte opérationnelle
+chromecast : découverte et intéraction opérationnelles

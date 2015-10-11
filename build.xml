@@ -1,0 +1,38 @@
+<project default="jar">
+
+<property name="src.dir" value="./"/>
+<property name="bin.dir" value="bin"/>
+<property name="jar.dir" value="jar"/>
+<property name="version" value="1"/>
+<property name="classpath.dir" value="/usr/lib/java/"/>
+<property name="classpathShare.dir" value="/usr/share/java"/>
+<property name="name" value="protocol"/>
+
+<path id="class.path">
+	<fileset dir="${classpath.dir}">
+		<include name="**/*.jar"/>
+	</fileset>
+	<fileset dir="${classpathShare.dir}">
+		<include name="**/*.jar"/>
+	</fileset>
+</path>
+	
+<target name="clean">
+	<delete dir="${bin.dir}"/>
+	<delete dir="${jar.dir}"/>
+	<echo message="Nettoyage terminé"/>
+</target>
+
+<target name="compile" depends="clean">
+	<mkdir dir="${bin.dir}"/>
+	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="class.path" encoding="UTF-8"/>
+	<echo message="Compilation terminée"/>
+</target>
+
+<target name="jar" depends="compile">
+	<mkdir dir="${jar.dir}"/>
+	<jar destfile="${jar.dir}/${name}-${version}.jar" basedir="${bin.dir}"/>
+	<echo message="Création du fichier Jar terminée"/>
+</target>
+
+</project>
