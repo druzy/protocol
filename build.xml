@@ -4,15 +4,11 @@
 <property name="bin.dir" value="bin"/>
 <property name="jar.dir" value="jar"/>
 <property name="version" value="1"/>
-<property name="classpath.dir" value="/usr/lib/java/"/>
-<property name="classpathShare.dir" value="/usr/share/java"/>
+<property name="classpath.dir" value="/usr/share/java/"/>
 <property name="name" value="protocol"/>
 
 <path id="class.path">
 	<fileset dir="${classpath.dir}">
-		<include name="**/*.jar"/>
-	</fileset>
-	<fileset dir="${classpathShare.dir}">
 		<include name="**/*.jar"/>
 	</fileset>
 </path>
