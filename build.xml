@@ -3,7 +3,7 @@
 <property name="src.dir" value="./"/>
 <property name="bin.dir" value="bin"/>
 <property name="jar.dir" value="jar"/>
-<property name="version" value="1"/>
+<property name="version" value="1.1"/>
 <property name="classpath.dir" value="/usr/share/java/"/>
 <property name="name" value="protocol"/>
 
