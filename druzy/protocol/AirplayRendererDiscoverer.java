@@ -6,7 +6,7 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceListener;
 
-public class AirplayRendererDiscoverer implements Discoverer {
+public class AirplayRendererDiscoverer extends AbstractDiscoverer {
 
 	public static final String AIRPLAY_TYPE="_airplay._tcp.local.";
 	

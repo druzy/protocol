@@ -12,7 +12,7 @@ import org.xbill.DNS.TXTRecord;
 import org.xbill.mDNS.Browse;
 import su.litvak.chromecast.api.v2.ChromeCast;
 
-public class ChromecastRendererDiscoverer implements Discoverer {
+public class ChromecastRendererDiscoverer extends AbstractDiscoverer {
 
 	public static final String CHROMECAST_TYPE="_googlecast._tcp.local.";
 	public static final String ID="id";

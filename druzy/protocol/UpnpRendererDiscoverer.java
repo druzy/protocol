@@ -1,5 +1,8 @@
 package druzy.protocol;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fourthline.cling.DefaultUpnpServiceConfiguration;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
@@ -13,9 +16,12 @@ import org.fourthline.cling.model.meta.RemoteDevice;
 import org.fourthline.cling.model.types.DeviceType;
 import org.fourthline.cling.model.types.UDN;
 
-public class UpnpRendererDiscoverer implements Discoverer{
+public class UpnpRendererDiscoverer extends AbstractDiscoverer{
 
 	static private UpnpService upnpService=null;
+	
+	private int port=18040;
+	private int portFile=18041;
 	
 	public static final String UPNP_NAMESPACE="schemas-upnp-org";
 	public static final String MEDIA_RENDERER_TYPE="MediaRenderer";
@@ -23,9 +29,11 @@ public class UpnpRendererDiscoverer implements Discoverer{
 	
 	
 	public UpnpRendererDiscoverer() {
+		super();
 		if (upnpService==null){
-			upnpService=new UpnpServiceImpl(new DefaultUpnpServiceConfiguration(18040));
+			upnpService=new UpnpServiceImpl(new DefaultUpnpServiceConfiguration(port));
 		}
+		
 	}
 
 	@Override
@@ -34,7 +42,7 @@ public class UpnpRendererDiscoverer implements Discoverer{
 			
 			@Override
 			public void remoteDeviceAdded(Registry registry, RemoteDevice device){
-				listener.deviceDiscovery(new UpnpRenderer(device,upnpService));
+				listener.deviceDiscovery(new UpnpRenderer(device,upnpService, portFile));
 				
 			};
 		};
@@ -55,7 +63,7 @@ public class UpnpRendererDiscoverer implements Discoverer{
 				
 				@Override
 				public void remoteDeviceAdded(Registry registry, RemoteDevice device){
-					listener.deviceDiscovery(new UpnpRenderer(device,upnpService));
+					listener.deviceDiscovery(new UpnpRenderer(device,upnpService,portFile));
 				};
 			};
 			
@@ -64,7 +72,7 @@ public class UpnpRendererDiscoverer implements Discoverer{
 			upnpService.getControlPoint().search(new UDNHeader(new UDN(identifier)),delay);
 		}else{
 			
-			listener.deviceDiscovery(new UpnpRenderer(d,upnpService));
+			listener.deviceDiscovery(new UpnpRenderer(d,upnpService,portFile));
 		}
 		
 	}
@@ -87,6 +95,13 @@ public class UpnpRendererDiscoverer implements Discoverer{
 		UpnpRendererDiscoverer.upnpService = upnpService;
 	}
 
+	@Override
+	public List<Integer> getPorts(){
+		ArrayList<Integer> list=new ArrayList<Integer>();
+		list.add(port);
+		list.add(portFile);
+		return list;
+	}
 	
 	
 }

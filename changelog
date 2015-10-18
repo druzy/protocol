@@ -1,3 +1,7 @@
+protocol version 1.1:
+Fix bug : exception lorsque que l'on clique sur annuler au choix du fichier
+fix bug : ajout des images au jar
+
 protocol version 1:
 Découverte et intéraction avec différents protocoles : upnp, airplay, chromecast
 upnp : découverte et intéraction opérationnelles

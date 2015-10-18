@@ -27,7 +27,12 @@
 
 <target name="jar" depends="compile">
 	<mkdir dir="${jar.dir}"/>
-	<jar destfile="${jar.dir}/${name}-${version}.jar" basedir="${bin.dir}"/>
+	<jar destfile="${jar.dir}/${name}-${version}.jar" basedir="${bin.dir}">
+		<fileset dir="${src.dir}">
+			<include name="druzy/protocol/image/**/*.png"/>
+		</fileset>
+	</jar>
+	
 	<echo message="Création du fichier Jar terminée"/>
 </target>
 

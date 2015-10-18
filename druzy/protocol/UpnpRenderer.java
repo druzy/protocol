@@ -35,7 +35,6 @@ public class UpnpRenderer extends AbstractRenderer {
 	public static final ServiceType CONNECTION_MANAGER_TYPE=new ServiceType(UpnpRendererDiscoverer.UPNP_NAMESPACE,"ConnectionManager");
 	public static final ServiceType AV_TRANSPORT_TYPE=new ServiceType(UpnpRendererDiscoverer.UPNP_NAMESPACE,"AVTransport");
 	public static final ServiceType RENDERING_CONTROL_TYPE=new ServiceType(UpnpRendererDiscoverer.UPNP_NAMESPACE,"RenderingControl");
-	public static final int HTTP_SERVER_PORT=15322;
 	
 	private RemoteDevice remoteDevice=null;
 	private String protocol=null;
@@ -57,10 +56,11 @@ public class UpnpRenderer extends AbstractRenderer {
 	private Time timePosition=null;
 	private int volume=0;
 	private boolean mute=false;
+	private int portFile=0;
 	
 	private String sink=null;
 	
-	public UpnpRenderer(RemoteDevice remoteDevice, UpnpService upnpService) {
+	public UpnpRenderer(RemoteDevice remoteDevice, UpnpService upnpService,int portFile) {
 		super();
 		this.remoteDevice=remoteDevice;
 		this.protocol="upnp";
@@ -70,6 +70,7 @@ public class UpnpRenderer extends AbstractRenderer {
 		this.upnpService=upnpService;
 		this.duration=Time.valueOf("00:00:00");
 		this.timePosition=Time.valueOf("00:00:00");
+		this.portFile=portFile;
 	}
 
 	@Override
@@ -220,16 +221,16 @@ public class UpnpRenderer extends AbstractRenderer {
 			//création du metadata du fichier
 			DIDLContent content=new DIDLContent();
 			Item item;
-			item = new VideoItem(file.getAbsolutePath(),file.getParent(),file.getName(),"JMita",new Res(new ProtocolInfo(askProtocol),file.length(),RestrictedFileServer.getInstance(HTTP_SERVER_PORT).toString()+file.getAbsolutePath()));
+			item = new VideoItem(file.getAbsolutePath(),file.getParent(),file.getName(),"JMita",new Res(new ProtocolInfo(askProtocol),file.length(),RestrictedFileServer.getInstance(portFile).toString()+file.getAbsolutePath()));
 			content.addItem(item);
 			
 			//envoie de l'uri et démarrage du serveur http pour envoyer la vidéo 
-			RestrictedFileServer.getInstance(HTTP_SERVER_PORT).addAuthorizedFile(file);
-			if (!RestrictedFileServer.getInstance(HTTP_SERVER_PORT).isStarting()) RestrictedFileServer.getInstance(HTTP_SERVER_PORT).start();
+			RestrictedFileServer.getInstance(portFile).addAuthorizedFile(file);
+			if (!RestrictedFileServer.getInstance(portFile).isStarting()) RestrictedFileServer.getInstance(portFile).start();
 			
 			ActionInvocation<RemoteService> invocSetUri=new ActionInvocation<RemoteService>(avTransport.getAction("SetAVTransportURI"));
 			invocSetUri.setInput("InstanceID",String.valueOf(avTransportId));
-			invocSetUri.setInput("CurrentURI", RestrictedFileServer.getInstance(HTTP_SERVER_PORT).toString()+file.getAbsolutePath());
+			invocSetUri.setInput("CurrentURI", RestrictedFileServer.getInstance(portFile).toString()+file.getAbsolutePath());
 			try {
 				invocSetUri.setInput("CurrentURIMetaData",new DIDLParser().generate(content));
 			} catch (Exception e) {
