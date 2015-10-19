@@ -17,10 +17,12 @@ public class DiscovererFactory {
 		Set<Class<? extends Discoverer>> set=reflect.getSubTypesOf(Discoverer.class);
 		
 		for (Class<? extends Discoverer> disco:set){
-			try {
-				ret.add(disco.newInstance());
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (!disco.equals(AbstractDiscoverer.class)){
+				try {
+					ret.add(disco.newInstance());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		

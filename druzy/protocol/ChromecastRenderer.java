@@ -6,10 +6,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.security.GeneralSecurityException;
+import java.sql.Time;
 
 import javax.swing.ImageIcon;
 
 import druzy.server.RestrictedFileServer;
+import druzy.utils.TimeUtils;
 
 import su.litvak.chromecast.api.v2.ChromeCast;
 import su.litvak.chromecast.api.v2.Status;
@@ -143,4 +145,16 @@ public class ChromecastRenderer extends AbstractRenderer {
 		return true;
 	}
 
+	@Override
+	public Time getDuration(){
+		try {
+			System.out.println(chromecast.getMediaStatus());
+			if (chromecast.getMediaStatus()==null) return TimeUtils.secondsToTime(0);
+			else return TimeUtils.secondsToTime(chromecast.getMediaStatus().media.duration.intValue());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return TimeUtils.secondsToTime(0);
+		}
+	
+	}
 }
