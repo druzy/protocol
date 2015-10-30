@@ -1,11 +1,9 @@
 package druzy.protocol;
 
+import java.beans.PropertyChangeEvent;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.security.GeneralSecurityException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Time;
 
 import javax.swing.ImageIcon;
@@ -13,36 +11,47 @@ import javax.swing.ImageIcon;
 import druzy.server.RestrictedFileServer;
 import druzy.utils.TimeUtils;
 
-import su.litvak.chromecast.api.v2.ChromeCast;
-import su.litvak.chromecast.api.v2.Status;
-
 public class ChromecastRenderer extends AbstractRenderer {
 
-	private ChromeCast chromecast=null;
+	private boolean play=false;
 	private String identifier=null;
 	private String name=null;
-	private ImageIcon icon=null;
 	private String protocol=null;
-	private int iconPort=0;
-	
-	public static final int HTTP_SERVER_PORT=8965; 
+	//private int iconPort=8008;
 	
 	public static final String APP_ID_VIDEO="CC1AD845";
+	public static final String CHROMECAST_ICON="druzy/protocol/image/chromecast-icon.png";
 	
-	public ChromecastRenderer(ChromeCast chromecast,String identifier, String name, URI icon){
+	public ChromecastRenderer(String identifier, String name){
 		super();
 		this.protocol="chromecast";
-		this.iconPort=8008;
-		this.chromecast=chromecast;
 		this.identifier=identifier;
 		this.name=name;
-		try {
-			this.icon=new ImageIcon(new URL("http://"+chromecast.getAddress()+":"+iconPort+icon.toString()));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
 	}
 
+	@Override
+	public void play() {
+		new Bridge(Bridge.PLAY,identifier).exec();
+	}
+
+	@Override
+	public boolean isPlay(){
+		return play;
+	}
+	
+/*	private void setPlay(boolean play){
+		if (play){
+			setPause(false);
+			setStop(false);
+		}
+		
+		if (this.play!=play){
+			boolean old=this.play;
+			this.play=play;
+			firePropertyChange(new PropertyChangeEvent(this,"play",old,play));
+		}
+	}*/
+	
 	@Override
 	public String getIdentifier() {
 		return identifier;
@@ -75,86 +84,45 @@ public class ChromecastRenderer extends AbstractRenderer {
 
 	@Override
 	public ImageIcon getIcon() {
-		return icon;
+		return new ImageIcon(ClassLoader.getSystemResource(CHROMECAST_ICON));
 	}
 
-	@Override
-	public void setIcon(ImageIcon icon) {
-		this.icon=icon;
-	}
-
-	@Override
-	public void play() {
-		try {
-			System.out.println("avant play");
-			if (!chromecast.isConnected()) chromecast.connect();
-			if (chromecast.isAppAvailable(APP_ID_VIDEO)){
-				if (!chromecast.isAppRunning(APP_ID_VIDEO)) chromecast.launchApp(APP_ID_VIDEO);
-				chromecast.play();
-				System.out.println("aès play");
-			}
-		
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
-		}
-
-	}
+	
 
 	@Override
 	public void pause() {
-		try {
-			chromecast.pause();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new Bridge(Bridge.PAUSE,identifier).exec();
 	}
 
 	@Override
 	public void stop() {
-		try {
-			chromecast.stopApp();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		new Bridge(Bridge.STOP,identifier).exec();
 	}
 
 	@Override
-	public boolean send(File file) {
+	public boolean send(final File file) {
+		if (!RestrictedFileServer.getInstance(PORT_FILE).isStarting()) RestrictedFileServer.getInstance(PORT_FILE).start();
+		RestrictedFileServer.getInstance(PORT_FILE).addAuthorizedFile(file);
+		String url=RestrictedFileServer.getInstance(PORT_FILE).toString();//+file.getAbsolutePath();
 		try {
-			if (!chromecast.isConnected()) chromecast.connect();
-			
-			Status status=chromecast.getStatus();
-			if (chromecast.isAppAvailable(APP_ID_VIDEO) && !status.isAppRunning(APP_ID_VIDEO)){
-				chromecast.launchApp(APP_ID_VIDEO);
-			}
-			System.out.println("dans send");
-			RestrictedFileServer.getInstance(HTTP_SERVER_PORT).addAuthorizedFile(file);
-			if (!RestrictedFileServer.getInstance(HTTP_SERVER_PORT).isStarting()) RestrictedFileServer.getInstance(HTTP_SERVER_PORT).start();
-			chromecast.load(RestrictedFileServer.getInstance(HTTP_SERVER_PORT).toString()+file.getAbsolutePath());
-			System.out.println("après load");
-		
-		} catch (IOException | GeneralSecurityException e) {
+			url=url+URLEncoder.encode(file.getAbsolutePath(),"utf-8");
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			return false;
 		}
-		
+		System.out.println(url);
+		Bridge b=new Bridge(Bridge.SEND,identifier,url,"video/mp4");
+		b.exec();
 		return true;
 	}
 
 	@Override
 	public Time getDuration(){
-		try {
-			System.out.println(chromecast.getMediaStatus());
-			if (chromecast.getMediaStatus()==null) return TimeUtils.secondsToTime(0);
-			else return TimeUtils.secondsToTime(chromecast.getMediaStatus().media.duration.intValue());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return TimeUtils.secondsToTime(0);
+		String strDuration=new Bridge(Bridge.MEDIA_STATUS,identifier).exec().get(0).get("duration");
+		if (strDuration.equals("None")) return Time.valueOf("00:00:00");
+		else{
+			float f=Float.parseFloat(strDuration);
+			return TimeUtils.secondsToTime((int)f);
 		}
-	
 	}
+
 }

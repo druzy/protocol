@@ -85,7 +85,7 @@ public class UpnpRendererDiscoverer extends AbstractDiscoverer{
 			
 			@Override
 			public void remoteDeviceAdded(Registry registry, RemoteDevice device){
-				listener.deviceDiscovery(new UpnpRenderer(device,upnpService, portFile));
+				listener.deviceDiscovery(new UpnpRenderer(device,upnpService));
 				
 			};
 		};
@@ -106,7 +106,7 @@ public class UpnpRendererDiscoverer extends AbstractDiscoverer{
 				
 				@Override
 				public void remoteDeviceAdded(Registry registry, RemoteDevice device){
-					listener.deviceDiscovery(new UpnpRenderer(device,upnpService,portFile));
+					listener.deviceDiscovery(new UpnpRenderer(device,upnpService));
 				};
 			};
 			
@@ -115,7 +115,7 @@ public class UpnpRendererDiscoverer extends AbstractDiscoverer{
 			upnpService.getControlPoint().search(new UDNHeader(new UDN(identifier)),delay);
 		}else{
 			
-			listener.deviceDiscovery(new UpnpRenderer(d,upnpService,portFile));
+			listener.deviceDiscovery(new UpnpRenderer(d,upnpService));
 		}
 		
 	}

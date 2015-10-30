@@ -8,6 +8,8 @@ import druzy.mvc.Model;
 
 public interface Renderer extends Device,Model,FileFilter {
 
+	public static final int PORT_FILE=18041;
+	
 	public void play();
 	public boolean isPlay();
 	public void pause();

@@ -1,3 +1,6 @@
+protocol version 1.3
+refonte chromecast api
+
 protocol version 1.2 :
 upnp : fixage du port d'écoute udp
 

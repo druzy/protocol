@@ -56,11 +56,10 @@ public class UpnpRenderer extends AbstractRenderer {
 	private Time timePosition=null;
 	private int volume=0;
 	private boolean mute=false;
-	private int portFile=0;
 	
 	private String sink=null;
 	
-	public UpnpRenderer(RemoteDevice remoteDevice, UpnpService upnpService,int portFile) {
+	public UpnpRenderer(RemoteDevice remoteDevice, UpnpService upnpService) {
 		super();
 		this.remoteDevice=remoteDevice;
 		this.protocol="upnp";
@@ -70,7 +69,6 @@ public class UpnpRenderer extends AbstractRenderer {
 		this.upnpService=upnpService;
 		this.duration=Time.valueOf("00:00:00");
 		this.timePosition=Time.valueOf("00:00:00");
-		this.portFile=portFile;
 	}
 
 	@Override
@@ -221,16 +219,16 @@ public class UpnpRenderer extends AbstractRenderer {
 			//création du metadata du fichier
 			DIDLContent content=new DIDLContent();
 			Item item;
-			item = new VideoItem(file.getAbsolutePath(),file.getParent(),file.getName(),"JMita",new Res(new ProtocolInfo(askProtocol),file.length(),RestrictedFileServer.getInstance(portFile).toString()+file.getAbsolutePath()));
+			item = new VideoItem(file.getAbsolutePath(),file.getParent(),file.getName(),"JMita",new Res(new ProtocolInfo(askProtocol),file.length(),RestrictedFileServer.getInstance(PORT_FILE).toString()+file.getAbsolutePath()));
 			content.addItem(item);
 			
 			//envoie de l'uri et démarrage du serveur http pour envoyer la vidéo 
-			RestrictedFileServer.getInstance(portFile).addAuthorizedFile(file);
-			if (!RestrictedFileServer.getInstance(portFile).isStarting()) RestrictedFileServer.getInstance(portFile).start();
+			RestrictedFileServer.getInstance(PORT_FILE).addAuthorizedFile(file);
+			if (!RestrictedFileServer.getInstance(PORT_FILE).isStarting()) RestrictedFileServer.getInstance(PORT_FILE).start();
 			
 			ActionInvocation<RemoteService> invocSetUri=new ActionInvocation<RemoteService>(avTransport.getAction("SetAVTransportURI"));
 			invocSetUri.setInput("InstanceID",String.valueOf(avTransportId));
-			invocSetUri.setInput("CurrentURI", RestrictedFileServer.getInstance(portFile).toString()+file.getAbsolutePath());
+			invocSetUri.setInput("CurrentURI", RestrictedFileServer.getInstance(PORT_FILE).toString()+file.getAbsolutePath());
 			try {
 				invocSetUri.setInput("CurrentURIMetaData",new DIDLParser().generate(content));
 			} catch (Exception e) {

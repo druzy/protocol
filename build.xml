@@ -3,9 +3,9 @@
 <property name="src.dir" value="./"/>
 <property name="bin.dir" value="bin"/>
 <property name="jar.dir" value="jar"/>
-<property name="version" value="1.2"/>
+<property name="version" value="1.3"/>
 <property name="classpath.dir" value="/usr/share/java/"/>
-<property name="name" value="protocol"/>
+<property name="name" value="protocoldruzy"/>
 
 <path id="class.path">
 	<fileset dir="${classpath.dir}">
