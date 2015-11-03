@@ -120,7 +120,7 @@ public abstract class AbstractRenderer extends AbstractModel implements Renderer
 	
 	@Override
 	public int getVolumeMax(){
-		return 0; 
+		return DEFAULT_VOLUME_MAX; 
 	}
 	
 	@Override

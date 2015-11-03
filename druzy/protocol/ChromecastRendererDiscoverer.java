@@ -1,5 +1,9 @@
 package druzy.protocol;
 
+import druzy.chromecast.Bridge;
+import druzy.chromecast.BridgeEvent;
+import druzy.chromecast.BridgeListener;
+
 public class ChromecastRendererDiscoverer extends AbstractDiscoverer {
 
 	public ChromecastRendererDiscoverer() {}
@@ -11,6 +15,7 @@ public class ChromecastRendererDiscoverer extends AbstractDiscoverer {
 				Bridge b=new Bridge(Bridge.DISCOVERY);
 				b.exec(new BridgeListener(){
 					public void newMessage(BridgeEvent event){
+						
 						listener.deviceDiscovery(new ChromecastRenderer(event.getMessage().get("ip"),event.getMessage().get("name")));
 					}
 				});

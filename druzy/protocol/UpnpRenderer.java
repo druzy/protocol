@@ -43,6 +43,7 @@ public class UpnpRenderer extends AbstractRenderer {
 	private RemoteService renderingControl=null;
 	private UpnpService upnpService=null;
 	private int avTransportId=-1;
+	@SuppressWarnings("unused")
 	private int connectionId=0;
 	private int rcsId=-1;
 	private WatchService watchPositionInfo=null;
@@ -156,8 +157,6 @@ public class UpnpRenderer extends AbstractRenderer {
 			firePropertyChange(new PropertyChangeEvent(this,"pause",old,pause));
 		}
 	}
-	
-	
 
 	@Override
 	public void stop() {
