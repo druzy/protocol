@@ -1,7 +1,10 @@
+protocoldruzy 2.1 :
+Envoie directe vers Chromecast
+
 protocoldruzy version 2
 protocol chromecast opérationnelle
 
-protocol version 1.3
+protocol version 1.3 :
 refonte de l'api chromecast
 
 protocol version 1.2 :

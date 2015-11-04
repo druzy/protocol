@@ -24,7 +24,19 @@ public class ChromecastRendererDiscoverer extends AbstractDiscoverer {
 	}
 
 	@Override
-	public void startDiscovery(int delay, String identifier, DiscoveryListener listener) {
+	public void startDiscovery(int delay, final String identifier, final DiscoveryListener listener) {
+		new Thread(){
+			public void run(){
+				Bridge b=new Bridge(Bridge.DISCOVERY);
+				b.exec(new BridgeListener(){
+					public void newMessage(BridgeEvent event){
+						if (event.getMessage().get("ip").equals(identifier)){
+							listener.deviceDiscovery(new ChromecastRenderer(event.getMessage().get("ip"),event.getMessage().get("name")));
+						}
+					}
+				});
+			}
+		}.start();
 	}
  	
 	@Override
