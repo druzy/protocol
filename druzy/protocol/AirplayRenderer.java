@@ -9,6 +9,8 @@ public class AirplayRenderer extends AbstractRenderer {
 
 	private ServiceInfo info=null;
 	private String protocol=null;
+	private String uuid=null;
+	private String macAdresse=null;
 	
 	public static final String AIRPLAY_ICON="druzy/protocol/image/airplay-icon.png";
 	public static final String ID_PROPERTY="deviceid";
@@ -46,7 +48,6 @@ public class AirplayRenderer extends AbstractRenderer {
 
 	@Override
 	public void play() {
-		// TODO Auto-generated method stub
 
 	}
 

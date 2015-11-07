@@ -1,3 +1,6 @@
+protocoldruzy 2.2 :
+bug fix pour upnp : N'affichait plus les appareils upnp à la deuxième recherche
+
 protocoldruzy 2.1 :
 Envoie directe vers Chromecast
 

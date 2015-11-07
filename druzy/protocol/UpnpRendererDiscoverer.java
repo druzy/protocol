@@ -89,11 +89,13 @@ public class UpnpRendererDiscoverer extends AbstractDiscoverer{
 				
 			};
 		};
-		
+		for (RemoteDevice device : upnpService.getRegistry().getRemoteDevices()){
+			if (device.getType().equals(new DeviceType(UPNP_NAMESPACE,MEDIA_RENDERER_TYPE))){
+				listener.deviceDiscovery(new UpnpRenderer(device,upnpService));
+			}
+		}
 		upnpService.getRegistry().addListener(registryListener);
 		upnpService.getControlPoint().search(MEDIA_RENDERER_HEADER,delay);
-		
-		
 	}
 	
 	@Override

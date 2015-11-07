@@ -24,16 +24,22 @@ public class AirplayRendererDiscoverer extends AbstractDiscoverer {
 
 						@Override
 						public void serviceAdded(final ServiceEvent event) {
-							dns.requestServiceInfo(event.getType(), event.getInfo().getName(),1);
+							System.out.println("add");
+							new Thread(){
+								public void run(){
+									dns.requestServiceInfo(event.getType(), event.getInfo().getName(),true);
+								}
+							}.start();
 						}
 
 						@Override
 						public void serviceRemoved(ServiceEvent event) {
-
+							System.out.println("removed : "+event);
 						}
 
 						@Override
 						public void serviceResolved(final ServiceEvent event) {
+							System.out.println("resolved");
 							new Thread(){
 								public void run(){
 									listener.deviceDiscovery(new AirplayRenderer(event.getInfo()));
